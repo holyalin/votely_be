@@ -6,7 +6,8 @@ const mysql = require("mysql");
 const { PrismaClient } = require("@prisma/client");
 const { login } = require("./controller/authController");
 const { category, showAllCategory } = require("./controller/categoryController");
-var cors = require('cors')
+var cors = require('cors');
+const { register } = require("module");
 
 require('dotenv').config()
 
@@ -16,8 +17,12 @@ app.use(bodyParser.json());
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-// app.get("/login", login);
+
+app.post("/login", login);
+
 app.get("/category", showAllCategory);
+
+app.post("/register", register); 
 
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
