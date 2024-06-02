@@ -1,29 +1,36 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const port = 3001; // atau port lain yang tersedia
-const mysql = require("mysql");
-const { PrismaClient } = require("@prisma/client");
-const { login } = require("./controller/authController");
-const { category, showAllCategory } = require("./controller/categoryController");
-var cors = require('cors');
-const { register } = require("module");
+const port = 3001;
+var cors = require("cors");
 
-require('dotenv').config()
-
-app.use(cors())
+app.use(cors());
+// Middleware untuk parsing JSON
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+// Rute untuk registrasi
+app.post("/register", async (req, res) => {
+  const { email, password, name } = req.body;
+
+  try {
+    // Validasi input
+    if (!email || !password || !name) {
+      return res.status(400).json({ success: false, error: "All fields are required." });
+    }
+
+    // Simpan data ke database (contoh sederhana tanpa database)
+    // Anda bisa menambahkan logika penyimpanan database di sini
+
+    // Contoh respons sukses
+    const user = { email, name }; // Jangan kirim password kembali
+    res.status(201).json({ success: true, user });
+  } catch (error) {
+    // Tangani error server
+    console.error("Error during registration:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
 });
 
-app.post("/login", login);
-
-app.get("/category", showAllCategory);
-
-app.post("/register", register); 
-
 app.listen(port, () => {
-  console.log(`app listening on port ${port}`);
+  console.log(`Server running on http://localhost:${port}`);
 });

@@ -1,22 +1,30 @@
-const { AuthService } = require("../service/authService");
-const authService = new AuthService()
-function login(req, res) {
-    const email = req?.query?.email
-    const name = req?.query?.name
-    const password = req?.query?.password
-    authService.login(email, name, password)
-    return res.send();
-}
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
-function register(req, res) {
-    const email = req?.body?.email
-    const name = req?.body?.name
-    const password = req?.body?.password
-    authService.register(email, name, password)
-    return res.send();
-}
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  
+  // Implementasi logika login
+  res.send("Login endpoint");
+};
 
-module.exports = {
-    login,
-    register,
-}
+const register = async (req, res) => {
+  const { email, password, name } = req.body;
+
+  try {
+    if (!email || !password || !name) {
+      return res.status(400).json({ success: false, error: "All fields are required." });
+    }
+
+    const newUser = await prisma.user.create({
+      data: { email, password, name },
+    });
+
+    res.status(201).json({ success: true, user: newUser });
+  } catch (error) {
+    console.error("Error during registration:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+};
+
+module.exports = { login, register };
