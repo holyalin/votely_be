@@ -8,9 +8,10 @@ generator client {
 }
 
 model User {
-  user_id    Int       @id @default(autoincrement())
-  email      String    @unique
+  user_id    Int      @id @default(autoincrement())
+  email      String   @unique
   name       String
+  password   String
   created_at DateTime
 }
 
@@ -23,24 +24,23 @@ model Polling {
   img       String?
   deadline  DateTime?
   createdAt DateTime
-
 }
 
 model Option {
-  option_id      Int       @id @default(autoincrement())
-  name_category  String
-  name           String?
-  img            String?
-  createdAt      DateTime
+  option_id     Int      @id @default(autoincrement())
+  name_category String
+  name          String?
+  img           String?
+  createdAt     DateTime
 }
 
 model History {
-  history_id  Int @id @default(autoincrement())
-  user_id   Int
-  option_id Int
+  history_id Int @id @default(autoincrement())
+  user_id    Int
+  option_id  Int
 }
 
 model Category {
-  id_category   Int     @id @default(autoincrement())
-  name_category String  @unique
+  id_category   Int    @id @default(autoincrement())
+  name_category String @unique
 }
