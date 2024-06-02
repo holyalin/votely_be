@@ -6,8 +6,11 @@ const mysql = require("mysql");
 const { PrismaClient } = require("@prisma/client");
 const { login } = require("./controller/authController");
 const { category, showAllCategory } = require("./controller/categoryController");
+var cors = require('cors')
+
 require('dotenv').config()
 
+app.use(cors())
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
