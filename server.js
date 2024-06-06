@@ -1,33 +1,31 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
 const port = 3001;
+const { register, login } = require("./controller/authController");
+const authRoutes = require("./routes/auth");
+const { showAllCategory } = require("./controller/categoryController");
+const { upload, handleOptionUpload } = require("./controller/uploadController");
 
-// Middleware untuk parsing JSON
+app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/uploads", express.static("uploads")); // Serve uploaded files
+
+app.use("/api/auth", authRoutes);
 
 // Rute untuk registrasi
-app.post("/register", async (req, res) => {
-  const { email, password, name } = req.body;
+app.post("/register", register);
+app.post("/login", login);
 
-  try {
-    // Validasi input
-    if (!email || !password || !name) {
-      return res.status(400).json({ success: false, error: "All fields are required." });
-    }
+// Rute untuk kategori
+app.get("/category", showAllCategory);
 
-    // Simpan data ke database (contoh sederhana tanpa database)
-    // Anda bisa menambahkan logika penyimpanan database di sini
-
-    // Contoh respons sukses
-    const user = { email, name }; // Jangan kirim password kembali
-    res.status(201).json({ success: true, user });
-  } catch (error) {
-    // Tangani error server
-    console.error("Error during registration:", error);
-    res.status(500).json({ success: false, error: "Internal Server Error" });
-  }
-});
+// Rute untuk menambahkan option
+app.post("/options", upload.single("image"), handleOptionUpload);
+app.post("/polling", upload.single("image"), handleOptionUpload);
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
