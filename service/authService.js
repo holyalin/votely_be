@@ -15,8 +15,7 @@ class AuthService {
 
         verify(token, refreshTokenSecret, (err, user) => {
             if (err) throw new Error('Terjadi masalah');
-
-            const accessToken = jwt.sign({ id: user.id, email: user.email }, accessTokenSecret, { expiresIn: '30d' });
+            const accessToken = sign({ id: user.id, email: user.email }, accessTokenSecret, { expiresIn: '30d' });
             return accessToken
         });
     }
