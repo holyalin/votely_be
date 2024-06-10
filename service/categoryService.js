@@ -7,6 +7,12 @@ class CategoryService {
     }
 
     async createCategory({ name, owner_id }) {
+        const category = await this.prisma.category.count({
+            where: {
+                name
+            }
+        })
+        if (category) throw new Error(`${name} sudah terpakai`)
         return await this.prisma.category.create({
             data: {
                 name,

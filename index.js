@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 
 const { APP_PORT } = require('./constants')
 const { register, login, token } = require("./controller/authController");
-const { createCategory } = require("./controller/categoryController");
+const { createCategory, allCategory } = require("./controller/categoryController");
 
 const app = express();
 const cors = require("cors");
@@ -20,6 +20,7 @@ route.post('/register', register)
 route.post('/login', login)
 route.post('/token', token)
 route.post('/create-category', authenticateToken, createCategory)
+route.get('/category', authenticateToken, allCategory)
 
 app.use("/api", route);
 

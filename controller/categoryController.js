@@ -5,7 +5,7 @@ const createCategory = async (req, res) => {
   try {
     const { category_name } = req.body;
     const { id } = req?.user
-    if (category.length < 4) throw new Error('Minimal kategori 4 karakter')
+    if (category_name.length < 4) throw new Error('Minimal kategori 4 karakter')
     await categoryService.createCategory({ name: category_name, owner_id: id })
     res.status(201).json({ success: true, data: {} });
   } catch (error) {
