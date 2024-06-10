@@ -17,20 +17,23 @@ const port = process.env.PORT || 3001;
 app.use(cors());
 app.use(bodyParser.json());
 
-app.post("/register", register);
+const route = express.Router()
+route.post('/register', register)
 
-// Rute untuk kategori
-app.get("/category", showAllCategory);
+app.use("/api", route);
 
-// Routes for options
-app.post("/options", addOption);
-app.get("/options", showAllOptions);
+// // Rute untuk kategori
+// app.get("/category", showAllCategory);
 
-// rute untu homepage
-app.get("/homepage", polling);
+// // Routes for options
+// app.post("/options", addOption);
+// app.get("/options", showAllOptions);
 
-//rute untuk polling
-app.post("/polling", createPollingController);
+// // rute untu homepage
+// app.get("/homepage", polling);
+
+// //rute untuk polling
+// app.post("/polling", createPollingController);
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
