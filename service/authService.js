@@ -1,12 +1,24 @@
 const { PrismaClient } = require('@prisma/client');
 const { comparePassword } = require('../utils');
-const { sign } = require('jsonwebtoken')
+const { sign, verify } = require('jsonwebtoken')
 const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = require('../constants')
 
 class AuthService {
     prisma;
     constructor() {
         this.prisma = new PrismaClient()
+    }
+
+    async token(token) {
+        const storedToken = await this.prisma.token.findUnique({ where: { token } });
+        if (!storedToken) throw new Error('Tidak ditemukan');
+
+        verify(token, refreshTokenSecret, (err, user) => {
+            if (err) throw new Error('Terjadi masalah');
+
+            const accessToken = jwt.sign({ id: user.id, email: user.email }, accessTokenSecret, { expiresIn: '30d' });
+            return accessToken
+        });
     }
 
     async login({ email, password }) {
