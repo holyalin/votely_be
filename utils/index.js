@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const { verify } = require('jsonwebtoken');
+const { ACCESS_TOKEN_SECRET } = require('../constants');
 const saltRounds = 10;
 
 const hashPassword = (password) => {
@@ -29,8 +30,7 @@ const comparePassword = (password, hash) => {
 const authenticateToken = (req, res, next) => {
     const token = req.headers['authorization'] && req.headers['authorization'].split(' ')[1];
     if (!token) return res.sendStatus(401);
-
-    verify(token, accessTokenSecret, (err, user) => {
+    verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
         req.user = user;
         next();

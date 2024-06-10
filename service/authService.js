@@ -15,7 +15,7 @@ class AuthService {
 
         verify(token, refreshTokenSecret, (err, user) => {
             if (err) throw new Error('Terjadi masalah');
-            const accessToken = sign({ id: user.id, email: user.email }, accessTokenSecret, { expiresIn: '30d' });
+            const accessToken = sign({ id: user.id, email: user.email }, ACCESS_TOKEN_SECRET, { expiresIn: '30d' });
             return accessToken
         });
     }
@@ -24,7 +24,7 @@ class AuthService {
         const user = await this.prisma.user.findUnique({ where: { email } });
         const compare = await comparePassword(password, user?.password)
         if (user && compare) {
-            const accessToken = await sign({ id: user.user_id, email: user.email }, ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
+            const accessToken = await sign({ id: user.user_id, email: user.email }, ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
             const refreshToken = await sign({ id: user.user_id, email: user.email }, REFRESH_TOKEN_SECRET);
             await this.prisma.token.create({
                 data: {

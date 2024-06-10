@@ -19,7 +19,7 @@ const route = express.Router()
 route.post('/register', register)
 route.post('/login', login)
 route.post('/token', token)
-route.post('/category', authenticateToken, createCategory)
+route.post('/create-category', authenticateToken, createCategory)
 
 app.use("/api", route);
 
