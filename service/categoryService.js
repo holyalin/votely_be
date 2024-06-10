@@ -14,6 +14,10 @@ class CategoryService {
             }
         })
     }
+
+    async allCategory() {
+        return await this.prisma.category.findMany({})
+    }
 }
 
 module.exports = { CategoryService }
