@@ -2,17 +2,19 @@ require("dotenv").config();
 
 const express = require("express");
 const bodyParser = require("body-parser");
-const app = express();
-const port = 3001;
-var cors = require("cors");
+
 const { register, login } = require("./controller/authController");
 const { showAllCategory } = require("./controller/categoryController");
 const { addOption, showAllOptions } = require("./controller/optionController");
 const { polling } = require("./controller/homepageController");
 const { createPollingController } = require("./controller/pollingController");
 
-app.use(cors());
+const app = express();
+const cors = require("cors");
+const port = process.env.PORT || 3001;
+
 // Middleware untuk parsing JSON
+app.use(cors());
 app.use(bodyParser.json());
 
 // Rute untuk registrasi
