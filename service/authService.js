@@ -34,9 +34,7 @@ class AuthService {
     //     return test
     // }
 
-    async register({ email, password: rawPassword, full_name }) {
-        if (rawPassword.length < 8) throw new Error('Tidak boleh kurang dari 8!')
-        const password = await hashPassword(rawPassword)
+    async register({ email, password, full_name }) {
         const register = await this.prisma.user.create({
             data: {
                 email,
@@ -44,7 +42,7 @@ class AuthService {
                 password
             }
         })
-        if(!register) throw new Error('Gagal melakukan register')
+        if (!register) throw new Error('Gagal melakukan register')
         return register
     }
 }
