@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 
-const { register } = require("./controller/authController");
+const { register, login } = require("./controller/authController");
 const { showAllCategory } = require("./controller/categoryController");
 const { addOption, showAllOptions } = require("./controller/optionController");
 const { polling } = require("./controller/homepageController");
@@ -19,6 +19,7 @@ app.use(bodyParser.json());
 
 const route = express.Router()
 route.post('/register', register)
+route.post('/login', login)
 
 app.use("/api", route);
 
