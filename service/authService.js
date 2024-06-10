@@ -35,6 +35,12 @@ class AuthService {
     // }
 
     async register({ email, password, full_name }) {
+        const user = await this.prisma.user.count({
+            where: {
+                email
+            }
+        })
+        if (user) throw new Error(`Email ${email} sudah digunakan`)
         const register = await this.prisma.user.create({
             data: {
                 email,
