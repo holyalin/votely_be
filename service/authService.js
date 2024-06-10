@@ -1,5 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
-const { hashPassword } = require('../utils');
+const { hashPassword, comparePassword } = require('../utils');
+const { sign } = require('jsonwebtoken')
+const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = require('../constants')
 
 class AuthService {
     prisma;
@@ -33,6 +35,23 @@ class AuthService {
     //     console.log({ test })
     //     return test
     // }
+
+    async login({ email, password }) {
+        const user = await this.prisma.user.findUnique({ where: { email } });
+        const compare = await comparePassword(password, user?.password)
+        if (user && compare) {
+            const accessToken = await sign({ id: user.id, email: user.email }, ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
+            const refreshToken = await sign({ id: user.id, email: user.email }, REFRESH_TOKEN_SECRET);
+
+            await prisma.token.create({
+                data: {
+                    token: refreshToken,
+                    userId: user.id
+                }
+            });
+        }
+        return true
+    }
 
     async register({ email, password, full_name }) {
         const user = await this.prisma.user.count({
