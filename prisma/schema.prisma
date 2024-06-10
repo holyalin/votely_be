@@ -7,40 +7,49 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
+model user {
   user_id    Int      @id @default(autoincrement())
   email      String   @unique
-  name       String
   password   String
-  created_at DateTime
+  full_name  String
+  updates_at DateTime @default(now())
+  created_at DateTime @default(now())
 }
 
-model Polling {
-  poll_id   Int       @id @default(autoincrement())
-  user_id   Int
-  category  String?
-  title     String
-  name      String?
-  img       String?
-  deadline  DateTime?
-  createdAt DateTime
+model polling {
+  polling_id  Int      @id @default(autoincrement())
+  name        String
+  image_url   String
+  description String
+  owner_id    Int
+  deadline_at DateTime @default(now())
+  updated_at  DateTime @default(now())
+  created_at  DateTime @default(now())
 }
 
-model Option {
-  option_id     Int      @id @default(autoincrement())
-  name_category String
-  name          String?
-  img           String?
-  createdAt     DateTime
+model option {
+  option_id  Int      @id @default(autoincrement())
+  polling_id Int
+  name       String
+  image_url  String
+  owner_id   Int
+  updated_at DateTime @default(now())
+  created_at DateTime @default(now())
 }
 
-model History {
-  history_id Int @id @default(autoincrement())
-  user_id    Int
+model category {
+  category_id Int      @id @default(autoincrement())
+  name        String
+  owner_id    Int
+  updated_at  DateTime @default(now())
+  created_at  DateTime @default(now())
+}
+
+model history {
+  history_id Int      @id @default(autoincrement())
+  polling_id Int
   option_id  Int
-}
-
-model Category {
-  id_category   Int    @id @default(autoincrement())
-  name_category String @unique
+  owner_id   Int
+  updated_at DateTime @default(now())
+  created_at DateTime @default(now())
 }
