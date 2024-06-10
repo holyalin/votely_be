@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-const { hashPassword, comparePassword } = require('../utils');
+const { comparePassword } = require('../utils');
 const { sign } = require('jsonwebtoken')
 const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = require('../constants')
 
@@ -8,49 +8,22 @@ class AuthService {
     constructor() {
         this.prisma = new PrismaClient()
     }
-    // async login(email, name, password) {
-    //     const prisma = new PrismaClient()
-    //     const test = await prisma.User.create({
-    //         data: {
-    //             email,
-    //             name,
-    //             password,
-    //             created_at: new Date(),
-    //         }
-    //     })
-    //     console.log({ test })
-    //     return test
-    // }
-
-    // async register(email, name, password) {
-    //     const prisma = new PrismaClient()
-    //     const test = await prisma.User.create({
-    //         data: {
-    //             email,
-    //             name,
-    //             password,
-    //             created_at: new Date(),
-    //         }
-    //     })
-    //     console.log({ test })
-    //     return test
-    // }
 
     async login({ email, password }) {
         const user = await this.prisma.user.findUnique({ where: { email } });
         const compare = await comparePassword(password, user?.password)
         if (user && compare) {
-            const accessToken = await sign({ id: user.id, email: user.email }, ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
-            const refreshToken = await sign({ id: user.id, email: user.email }, REFRESH_TOKEN_SECRET);
-
-            await prisma.token.create({
+            const accessToken = await sign({ id: user.user_id, email: user.email }, ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
+            const refreshToken = await sign({ id: user.user_id, email: user.email }, REFRESH_TOKEN_SECRET);
+            await this.prisma.token.create({
                 data: {
                     token: refreshToken,
-                    userId: user.id
+                    user_id: user.user_id
                 }
-            });
+            })
+            return { access_token: accessToken, refresh_token: refreshToken, user: { email: user?.email, full_name: user?.full_name } }
         }
-        return true
+        return false
     }
 
     async register({ email, password, full_name }) {
