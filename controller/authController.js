@@ -1,4 +1,5 @@
-const { AuthService } = require('../service/authService')
+const { AuthService } = require('../service/authService');
+const { hashPassword } = require('../utils');
 const authService = new AuthService()
 
 // const login = async (req, res) => {
