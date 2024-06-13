@@ -24,13 +24,13 @@ const poll = async (req, res) => {
   try {
     const { id: owner_id } = req?.user
     const { polling_id, option_id } = req?.params
-    const polling = await pollingService.pollingDetail({ polling_id })
+    const polling = await pollingService.pollingDetail({ polling_id: Number(polling_id) })
     if (!polling) throw new Error(`${polling_id} tidak ditemukan`)
-    const option = await optionService.optionDetail({ option_id, polling_id })
+    const option = await optionService.optionDetail({ option_id: Number(option_id), polling_id: Number(polling_id) })
     if (!option) throw new Error(`${option_id} tidak ditemukan`)
-    const pollHistory = await pollingService.checkPoll({option_id, owner_id, polling_id})
-    if(pollHistory) throw new Error(`Anda sudah melakukan polling`)
-    const poll = await pollingService.poll({ option_id, owner_id, polling_id })
+    const pollHistory = await pollingService.checkPoll({ option_id: Number(option_id), owner_id, polling_id: Number(polling_id) })
+    if (pollHistory) throw new Error(`Anda sudah melakukan polling`)
+    const poll = await pollingService.poll({ option_id: Number(option_id), owner_id, polling_id: Number(polling_id) })
     res.status(201).json({ success: true, data: poll });
   } catch (error) {
     console.error("error:", error);
