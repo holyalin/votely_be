@@ -24,6 +24,14 @@ class CategoryService {
     async allCategory() {
         return await this.prisma.category.findMany({})
     }
+
+    async categoryDetail(category_id) {
+        return await this.prisma.category.findFirst({
+            where: {
+                category_id
+            }
+        })
+    }
 }
 
 module.exports = { CategoryService }
