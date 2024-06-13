@@ -60,16 +60,19 @@ class PollingService {
     }
 
     async pollingDetail({ polling_id }) {
-        const options = await this.optionService.optionByPolling({ polling_id })
-        const polling = await this.prisma.polling.findFirst({
+        return await this.prisma.polling.findFirst({
             where: {
                 polling_id
             }
         })
-        return {
-            ...polling,
-            options
-        }
+    }
+
+    async pollHistory({ polling_id }) {
+        return await this.prisma.history.findMany({
+            where: {
+                polling_id
+            }
+        })
     }
 }
 

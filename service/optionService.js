@@ -7,8 +7,8 @@ class OptionService {
     }
 
     async optionDetail({ option_id, polling_id }) {
-        return await this.prisma.option.create({
-            data: {
+        return await this.prisma.option.findFirst({
+            where: {
                 option_id,
                 polling_id
             }

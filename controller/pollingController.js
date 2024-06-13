@@ -54,7 +54,9 @@ const pollingDetail = async (req, res) => {
     if (pollingId?.length < 1) throw new Error('Polling id harus diisi!')
     const polling = await pollingService.pollingDetail({ polling_id: pollingId })
     if (!polling) throw new Error('Polling tidak ditemukan!')
-    res.status(200).json({ success: true, data: polling });
+    const options = await optionService.optionByPolling({ polling_id: pollingId })
+    const history = await pollingService.pollHistory({ polling_id: pollingId })
+    res.status(200).json({ success: true, data: { ...polling, options, history } });
   } catch (error) {
     console.error("error:", error);
     res.status(400).json({ success: false, error: error?.message });
