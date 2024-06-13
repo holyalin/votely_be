@@ -6,6 +6,15 @@ class OptionService {
         this.prisma = new PrismaClient()
     }
 
+    async optionDetail({ option_id, polling_id }) {
+        return await this.prisma.option.create({
+            data: {
+                option_id,
+                polling_id
+            }
+        })
+    }
+
     async createOption({ polling_id, name, image_url, owner_id }) {
         return await this.prisma.option.create({
             data: {

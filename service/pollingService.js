@@ -24,6 +24,26 @@ class PollingService {
         })
     }
 
+    async poll({ owner_id, polling_id, option_id }) {
+        return await this.prisma.history.create({
+            data: {
+                owner_id,
+                polling_id,
+                option_id,
+            }
+        })
+    }
+
+    async checkPoll({ polling_id, option_id, owner_id }) {
+        return await this.prisma.history.findFirst({
+            where: {
+                polling_id,
+                option_id,
+                owner_id
+            }
+        })
+    }
+
     async allPolling({ category_id }) {
         let criteria = {}
         if (category_id) {
