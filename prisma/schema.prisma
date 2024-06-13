@@ -30,6 +30,7 @@ model polling {
   image_url   String
   description String
   owner_id    Int
+  category_id Int
   deadline_at DateTime?
   updated_at  DateTime  @updatedAt
   created_at  DateTime  @default(now())
