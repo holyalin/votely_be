@@ -1,9 +1,12 @@
 const { PrismaClient } = require('@prisma/client')
+const { OptionService } = require('./optionService')
 
 class PollingService {
     prisma;
+    optionService;
     constructor() {
         this.prisma = new PrismaClient()
+        this.optionService = new OptionService()
     }
 
     async createPolling({ name, image_url, description, owner_id, deadline_at, category_id }) {
@@ -33,6 +36,19 @@ class PollingService {
                 created_at: 'desc'
             }
         })
+    }
+
+    async pollingDetail({ polling_id }) {
+        const options = await this.optionService.optionByPolling({ polling_id })
+        const polling = await this.prisma.polling.findFirst({
+            where: {
+                polling_id
+            }
+        })
+        return {
+            ...polling,
+            options
+        }
     }
 }
 
