@@ -1,41 +1,29 @@
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client')
 
 class OptionService {
-  constructor() {}
-
-  async addOption(categoryId, name, img, name_category) {
-    try {
-      const prisma = new PrismaClient();
-      const option = await prisma.Option.create({
-        data: {
-          categoryId: categoryId,
-          name: name,
-          img: img,
-          name_category: name_category,
-          createdAt: new Date(),
-        },
-      });
-      return option;
-    } catch (error) {
-      console.error("Error adding option:", error);
-      throw error;
+    prisma;
+    constructor() {
+        this.prisma = new PrismaClient()
     }
-  }
 
-  async showAllOptions() {
-    try {
-      const prisma = new PrismaClient();
-      const options = await prisma.Option.findMany({
-        include: {
-          category: true,
-        },
-      });
-      return options;
-    } catch (error) {
-      console.error("Error fetching options:", error);
-      throw error;
+    async createOption({ polling_id, name, image_url, owner_id }) {
+        return await this.prisma.option.create({
+            data: {
+                polling_id, name, image_url, owner_id
+            }
+        })
     }
-  }
+
+    async optionByPolling({ polling_id }) {
+        return await this.prisma.option.findMany({
+            where: {
+                polling_id
+            },
+            orderBy: {
+                created_at: 'desc'
+            }
+        })
+    }
 }
 
-module.exports = { OptionService };
+module.exports = { OptionService }
