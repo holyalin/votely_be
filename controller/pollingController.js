@@ -10,8 +10,8 @@ const createPolling = async (req, res) => {
     if (name.length < 12) throw new Error('Minimal judul polling 12 karakter')
     const category = await categoryService.categoryDetail(category_id)
     if (!category) throw new Error('Kategori tidak ditemukan')
-    await pollingService.createPolling({ name, image_url, description, owner_id, deadline_at, category_id })
-    res.status(201).json({ success: true, data: {} });
+    const createPolling = await pollingService.createPolling({ name, image_url, description, owner_id, deadline_at, category_id })
+    res.status(201).json({ success: true, data: createPolling });
   } catch (error) {
     console.error("error:", error);
     res.status(400).json({ success: false, error: error?.message });

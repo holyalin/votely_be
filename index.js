@@ -11,6 +11,7 @@ const app = express();
 const cors = require("cors");
 const { authenticateToken } = require("./utils");
 const { createPolling, pollingDetail, allPolling } = require("./controller/pollingController");
+const { createOption } = require("./controller/optionController");
 
 // Middleware untuk parsing JSON
 app.use(cors());
@@ -22,6 +23,7 @@ route.post('/login', login)
 route.post('/token', token)
 route.post('/category', authenticateToken, createCategory)
 route.post('/polling', authenticateToken, createPolling)
+route.post('/polling/:polling_id/option', authenticateToken, createOption)
 route.get('/polling/:polling_id', authenticateToken, pollingDetail)
 route.get('/polling', authenticateToken, allPolling)
 route.get('/category', authenticateToken, allCategory)

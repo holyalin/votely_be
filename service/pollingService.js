@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client')
-const { OptionService } = require('./optionService')
+const { OptionService } = require('./optionService');
+const { formattingDate } = require('../utils');
 
 class PollingService {
     prisma;
@@ -18,7 +19,7 @@ class PollingService {
         if (polling) throw new Error(`${name} sudah terpakai`)
         return await this.prisma.polling.create({
             data: {
-                name, image_url, description, owner_id, deadline_at, category_id
+                name, image_url, description, owner_id, deadline_at: formattingDate(deadline_at), category_id
             }
         })
     }

@@ -37,8 +37,14 @@ const authenticateToken = (req, res, next) => {
     });
 }
 
+const formattingDate = (timestamp) => {
+    const date = new Date(timestamp)
+    return date.toISOString()
+}
+
 module.exports = {
     hashPassword,
     comparePassword,
-    authenticateToken
+    authenticateToken,
+    formattingDate
 };
