@@ -30,7 +30,7 @@ const allPolling = async (req, res) => {
 
 const pollingDetail = async (req, res) => {
   try {
-    const pollingId = req?.params?.polling_id || ""
+    const pollingId = Number(req?.params?.polling_id) || ""
     if (pollingId?.length < 1) throw new Error('Polling id harus diisi!')
     const polling = await pollingService.pollingDetail({ polling_id: pollingId })
     if (!polling) throw new Error('Polling tidak ditemukan!')
