@@ -1,24 +1,29 @@
 const { PrismaClient } = require('@prisma/client')
 
-class PollingService {
+class CategoryService {
     prisma;
     constructor() {
         this.prisma = new PrismaClient()
     }
 
-    async createPolling({ name, image_url, description, owner_id, deadline_at, category_id }) {
-        const polling = await this.prisma.polling.count({
+    async createCategory({ name, owner_id }) {
+        const category = await this.prisma.category.count({
             where: {
                 name
             }
         })
-        if (polling) throw new Error(`${name} sudah terpakai`)
-        return await this.prisma.polling.create({
+        if (category) throw new Error(`${name} sudah terpakai`)
+        return await this.prisma.category.create({
             data: {
-                name, image_url, description, owner_id, deadline_at, category_id
+                name,
+                owner_id
             }
         })
     }
+
+    async allCategory() {
+        return await this.prisma.category.findMany({})
+    }
 }
 
-module.exports = { PollingService }
+module.exports = { CategoryService }
