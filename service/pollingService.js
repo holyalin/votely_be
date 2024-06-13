@@ -1,47 +1,29 @@
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client')
 
-class PollingService {
-  async createPolling(user_id, category, title, name, img) {
-    const prisma = new PrismaClient();
-    return await prisma.polling.create({
-      data: {
-        user_id,
-        category,
-        title,
-        name,
-        img,
-        deadline: new Date(),
-        createdAt: new Date(),
-      },
-    });
-  }
-  // async polling(email, name, password) {
-  //     const prisma = new PrismaClient()
-  //     const test = await prisma.User.create({
-  //         data: {
-  //             email,
-  //             name,
-  //             password,
-  //             created_at: new Date(),
-  //         }
-  //     })
-  //     console.log({ test })
-  //     return test
-  // }
+class CategoryService {
+    prisma;
+    constructor() {
+        this.prisma = new PrismaClient()
+    }
 
-  // async register(email, name, password) {
-  //     const prisma = new PrismaClient()
-  //     const test = await prisma.User.create({
-  //         data: {
-  //             email,
-  //             name,
-  //             password,
-  //             created_at: new Date(),
-  //         }
-  //     })
-  //     console.log({ test })
-  //     return test
-  // }
+    async createCategory({ name, owner_id }) {
+        const category = await this.prisma.category.count({
+            where: {
+                name
+            }
+        })
+        if (category) throw new Error(`${name} sudah terpakai`)
+        return await this.prisma.category.create({
+            data: {
+                name,
+                owner_id
+            }
+        })
+    }
+
+    async allCategory() {
+        return await this.prisma.category.findMany({})
+    }
 }
 
-module.exports = { PollingService };
+module.exports = { CategoryService }
