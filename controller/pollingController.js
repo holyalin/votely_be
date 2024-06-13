@@ -24,4 +24,17 @@ const allPolling = async (req, res) => {
   }
 }
 
-module.exports = { createPolling, allPolling };
+const pollingDetail = async (req, res) => {
+  try {
+    const pollingId = req?.params?.polling_id || ""
+    if (pollingId?.length < 1) throw new Error('Polling id harus diisi!')
+    const polling = await pollingService.pollingDetail({ polling_id: pollingId })
+    if (!polling) throw new Error('Polling tidak ditemukan!')
+    res.status(200).json({ success: true, data: polling });
+  } catch (error) {
+    console.error("error:", error);
+    res.status(400).json({ success: false, error: error?.message });
+  }
+}
+
+module.exports = { createPolling, allPolling, pollingDetail };
