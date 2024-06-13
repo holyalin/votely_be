@@ -3,6 +3,14 @@ const { PrismaClient } = require("@prisma/client");
 class OptionService {
   constructor() {}
 
+  async getOptions() {
+    try {
+      return await Option.find({}, "name img"); // Mengambil 'name' dan 'img'
+    } catch (error) {
+      throw new Error("Unable to fetch options");
+    }
+  }
+
   async addOption(categoryId, name, img, name_category) {
     try {
       const prisma = new PrismaClient();
@@ -38,4 +46,4 @@ class OptionService {
   }
 }
 
-module.exports = { OptionService };
+module.exports = new OptionService();

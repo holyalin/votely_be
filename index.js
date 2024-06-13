@@ -2,41 +2,54 @@ require("dotenv").config();
 
 const express = require("express");
 const bodyParser = require("body-parser");
-const app = express();
-const port = 3001;
-var cors = require("cors");
+const cors = require("cors");
+const session = require("express-session");
+
 const { register, login } = require("./controller/authController");
 const { showAllCategory } = require("./controller/categoryController");
 const { addOption, showAllOptions } = require("./controller/optionController");
 const { polling } = require("./controller/homepageController");
 const { createPollingController } = require("./controller/pollingController");
+const routes = require("./routes"); // Make sure this file exists and is correctly set up
+
+const app = express();
+const port = 3001;
 
 app.use(cors());
-// Middleware untuk parsing JSON
+app.use(express.json());
 app.use(bodyParser.json());
 
-// Rute untuk registrasi
+// Configure session
+app.use(
+  session({
+    secret: "secret_key", // Replace 'secret_key' with a stronger secret
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false, // Set to true if using HTTPS
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
+    },
+  })
+);
+
+// Routes
 app.post("/register", register);
 app.post("/login", login);
-
-// Rute untuk kategori
 app.get("/category", showAllCategory);
-
-// Routes for options
 app.post("/options", addOption);
 app.get("/options", showAllOptions);
-
-// rute untu homepage
 app.get("/homepage", polling);
-
-//rute untuk polling
 app.post("/polling", createPollingController);
+app.use("/api", routes); // Use the defined routes
 
-// // Middleware for 404 error handling
-// app.use((req, res, next) => {
-//   res.status(404).json({ message: "Route not found" });
-// });
+// Endpoint for logout
+app.post("/api/logout", (req, res) => {
+  req.session.destroy(); // If using session
+  res.json({ message: "Logged out successfully" });
+});
 
+// Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
