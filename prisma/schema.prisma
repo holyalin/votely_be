@@ -8,8 +8,7 @@ generator client {
 }
 
 model token {
-  id         Int      @id @default(autoincrement())
-  token      String
+  token      String   @id
   user_id    Int
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
