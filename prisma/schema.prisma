@@ -1,14 +1,15 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model token {
-  token      String   @id
+  id         Int      @id @default(autoincrement())
+  token      String
   user_id    Int
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -19,8 +20,8 @@ model user {
   email      String   @unique
   password   String
   full_name  String
-  updated_at DateTime @updatedAt
   created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model polling {
@@ -29,10 +30,10 @@ model polling {
   image_url   String
   description String
   owner_id    Int
-  category_id Int
   deadline_at DateTime?
-  updated_at  DateTime  @updatedAt
+  updated_at  DateTime  @default(now()) @updatedAt
   created_at  DateTime  @default(now())
+  category_id Int
 }
 
 model option {
@@ -41,7 +42,7 @@ model option {
   name       String
   image_url  String
   owner_id   Int
-  updated_at DateTime @updatedAt
+  updated_at DateTime @default(now()) @updatedAt
   created_at DateTime @default(now())
 }
 
@@ -49,7 +50,7 @@ model category {
   category_id Int      @id @default(autoincrement())
   name        String
   owner_id    Int
-  updated_at  DateTime @updatedAt
+  updated_at  DateTime @default(now()) @updatedAt
   created_at  DateTime @default(now())
 }
 
@@ -58,6 +59,6 @@ model history {
   polling_id Int
   option_id  Int
   owner_id   Int
-  updated_at DateTime @updatedAt
+  updated_at DateTime @default(now()) @updatedAt
   created_at DateTime @default(now())
 }
