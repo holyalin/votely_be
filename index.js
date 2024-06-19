@@ -2,54 +2,35 @@ require("dotenv").config();
 
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors");
-const session = require("express-session");
 
-const { register, login } = require("./controller/authController");
-const { showAllCategory } = require("./controller/categoryController");
-const { addOption, showAllOptions } = require("./controller/optionController");
-const { polling } = require("./controller/homepageController");
-const { createPollingController } = require("./controller/pollingController");
-const routes = require("./routes"); // Make sure this file exists and is correctly set up
+const { APP_PORT } = require('./constants')
+const { register, login, token } = require("./controller/authController");
+const { createCategory, allCategory } = require("./controller/categoryController");
 
 const app = express();
-const port = 3001;
+const cors = require("cors");
+const { authenticateToken } = require("./utils");
+const { createPolling, pollingDetail, allPolling, poll } = require("./controller/pollingController");
+const { createOption } = require("./controller/optionController");
 
+// Middleware untuk parsing JSON
 app.use(cors());
-app.use(express.json());
 app.use(bodyParser.json());
 
-// Configure session
-app.use(
-  session({
-    secret: "secret_key", // Replace 'secret_key' with a stronger secret
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: false, // Set to true if using HTTPS
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
-    },
-  })
-);
+const route = express.Router()
+route.post('/register', register)
+route.post('/login', login)
+route.post('/token', token)
+route.post('/category', authenticateToken, createCategory)
+route.post('/polling', authenticateToken, createPolling)
+route.post('/polling/:polling_id/option/:option_id', authenticateToken, poll)
+route.post('/polling/:polling_id/option', authenticateToken, createOption)
+route.get('/polling/:polling_id', authenticateToken, pollingDetail)
+route.get('/polling', authenticateToken, allPolling)
+route.get('/category', authenticateToken, allCategory)
 
-// Routes
-app.post("/register", register);
-app.post("/login", login);
-app.get("/category", showAllCategory);
-app.post("/options", addOption);
-app.get("/options", showAllOptions);
-app.get("/homepage", polling);
-app.post("/polling", createPollingController);
-app.use("/api", routes); // Use the defined routes
+app.use("/api", route);
 
-// Endpoint for logout
-app.post("/api/logout", (req, res) => {
-  req.session.destroy(); // If using session
-  res.json({ message: "Logged out successfully" });
-});
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+app.listen(APP_PORT, () => {
+  console.log(`Server running on http://localhost:${APP_PORT}`);
 });

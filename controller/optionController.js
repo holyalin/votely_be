@@ -1,47 +1,24 @@
-const { OptionService } = require("../service/optionService");
-const optionService = new OptionService();
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 
-class OptionController {
-  async getOptions(req, res) {
-    try {
-      const options = await optionService.getOptions();
-      res.json(options);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server Error" });
-    }
-  }
-}
+const { PollingService } = require('../service/pollingService');
+const { OptionService } = require('../service/optionService');
+const pollingService = new PollingService()
+const optionService = new OptionService()
 
-const addOption = async (req, res) => {
-  const { categoryId, name, img, name_category } = req.body;
-
+const createOption = async (req, res) => {
   try {
-    const option = await optionService.addOption(categoryId, name, img, name_category);
-    res.json({
-      message: "Option added successfully",
-      data: option,
-    });
+    const { name, image_url } = req.body;
+    const { id: owner_id } = req?.user
+    let { polling_id } = req?.params
+    polling_id = parseInt(polling_id)
+    if (name.length < 1) throw new Error('Minimal judul option 1 karakter')
+    const polling = await pollingService.pollingDetail(polling_id)
+    if (!polling) throw new Error('Polling tidak ditemukan')
+    const createOption = await optionService.createOption({ image_url, name, owner_id, polling_id })
+    res.status(201).json({ success: true, data: createOption });
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to add option",
-      error: error.message,
-    });
+    console.error("error:", error);
+    res.status(400).json({ success: false, error: error?.message });
   }
 };
 
-const showAllOptions = async (req, res) => {
-  try {
-    const options = await optionService.showAllOptions();
-    res.json(options);
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to fetch options",
-      error: error.message,
-    });
-  }
-};
-
-module.exports = { addOption, showAllOptions };
+module.exports = { createOption };

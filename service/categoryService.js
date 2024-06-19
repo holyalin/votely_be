@@ -1,20 +1,36 @@
 const { PrismaClient } = require('@prisma/client')
 
 class CategoryService {
-    async category(name_category) {
-        const prisma = new PrismaClient()
-        const test = await prisma.Category.create({
-            data: {
-                name_category,
-            }
-        })
-        return test
+    prisma;
+    constructor() {
+        this.prisma = new PrismaClient()
     }
 
-    async showAllCategory () {
-        const prisma = new PrismaClient()
-        const category = await prisma.Category.findMany();
-        return category
+    async createCategory({ name, owner_id }) {
+        const category = await this.prisma.category.count({
+            where: {
+                name
+            }
+        })
+        if (category) throw new Error(`${name} sudah terpakai`)
+        return await this.prisma.category.create({
+            data: {
+                name,
+                owner_id
+            }
+        })
+    }
+
+    async allCategory() {
+        return await this.prisma.category.findMany({})
+    }
+
+    async categoryDetail(category_id) {
+        return await this.prisma.category.findFirst({
+            where: {
+                category_id
+            }
+        })
     }
 }
 
