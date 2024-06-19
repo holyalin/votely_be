@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 const route = express.Router()
 route.post('/register', register)
 route.post('/login', login)
-route.post('/token', token)
+route.post('/token', authenticateToken, token)
 route.post('/category', authenticateToken, createCategory)
 route.post('/polling', authenticateToken, createPolling)
 route.post('/polling/:polling_id/option/:option_id', authenticateToken, poll)

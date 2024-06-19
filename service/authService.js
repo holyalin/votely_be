@@ -10,10 +10,9 @@ class AuthService {
     }
 
     async token(token) {
-        const storedToken = await this.prisma.token.findUnique({ where: { token } });
+        const storedToken = await this.prisma.token.findFirst({ where: { token } });
         if (!storedToken) throw new Error('Tidak ditemukan');
-
-        verify(token, refreshTokenSecret, (err, user) => {
+        return verify(token, REFRESH_TOKEN_SECRET, (err, user) => {
             if (err) throw new Error('Terjadi masalah');
             const accessToken = sign({ id: user.id, email: user.email }, ACCESS_TOKEN_SECRET, { expiresIn: '30d' });
             return accessToken
