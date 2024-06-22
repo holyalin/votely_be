@@ -11,7 +11,7 @@ const createPolling = async (req, res) => {
     const { id: owner_id } = req?.user;
     if (name.length < 12) throw new Error("Minimal judul polling 12 karakter");
     const createPolling = await pollingService.createPolling({ name, image_url, description, owner_id, deadline_at, category_id: parseInt(category_id) });
-    
+
     res.status(201).json({ success: true, data: createPolling });
   } catch (error) {
     console.error("error:", error);
@@ -39,7 +39,8 @@ const poll = async (req, res) => {
 
 const allPolling = async (req, res) => {
   try {
-    const polling = await pollingService.allPolling();
+    const category_id = req?.query?.category_id || null;
+    const polling = await pollingService.allPolling({ category_id });
     res.status(200).json({ success: true, data: polling });
   } catch (error) {
     console.error("error:", error);
